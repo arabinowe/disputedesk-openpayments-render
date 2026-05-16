@@ -82,8 +82,8 @@
     "selfServeOnly": true
   },
   "deployment": {
-    "backendRepo": "https://github.com/arabinowe/disputedesk-openpayments",
-    "deployToRenderUrl": "https://render.com/deploy?repo=https://github.com/arabinowe/disputedesk-openpayments",
+    "backendRepo": "https://github.com/arabinowe/disputedesk-openpayments-render",
+    "deployToRenderUrl": "https://render.com/deploy?repo=https://github.com/arabinowe/disputedesk-openpayments-render",
     "backendHostConfigured": false
   },
   "updatedAt": "2026-05-16T02:10:07.970Z"

@@ -8,7 +8,7 @@ const OPS_ACTIONS_KEY = "openpayments.disputedesk.ops-actions.v1";
 const LICENSE_KEY = "openpayments.disputedesk.license.v1";
 const APP_VERSION = "0.1.0";
 const BACKEND_REPO_URL = "https://github.com/arabinowe/disputedesk-openpayments";
-const DEPLOY_TO_RENDER_URL = "https://render.com/deploy?repo=https://github.com/arabinowe/disputedesk-openpayments";
+const DEPLOY_TO_RENDER_URL = "https://render.com/deploy?repo=https://github.com/arabinowe/disputedesk-openpayments-render";
 const CORE_PLAN_PRICE = 99;
 const LEGACY_GROWTH_PAYMENT_LINK = "https://buy.stripe.com/fZuaEZ8Zc4zC4fI8EJgw001";
 let workspaceSaveTimer = null;
