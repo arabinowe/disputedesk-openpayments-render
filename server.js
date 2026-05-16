@@ -920,6 +920,7 @@ function buildBusinessStatus() {
       storageEncryptionConfigured: hasRealSecret(STORAGE_ENCRYPTION_SECRET, "replace-with-long-random-data-encryption-key"),
       stripeSecretKeyConfigured: hasRealSecret(process.env.STRIPE_SECRET_KEY, "sk_live_replace_me"),
       stripeWebhookSecretConfigured: hasRealSecret(process.env.STRIPE_WEBHOOK_SECRET, "whsec_replace_me"),
+      payoutReadiness: payoutReadiness(register),
       licenseSecretConfigured: hasRealSecret(process.env.LICENSE_SECRET, "replace-with-long-random-license-secret") || hasRealSecret(process.env.STRIPE_WEBHOOK_SECRET, "whsec_replace_me") || Boolean(ADMIN_TOKEN),
       metaCapiConfigured: Boolean(process.env.META_PIXEL_ID && process.env.META_ACCESS_TOKEN)
     },
@@ -1052,7 +1053,7 @@ function buildProfitReport() {
       canAcceptPayments: Boolean(status.readiness?.canAcceptPayments),
       paidAccessGate: Boolean(status.readiness?.hasPaidAccessGate),
       customerWorkspacePersistence: Boolean(status.readiness?.hasCustomerWorkspacePersistence),
-      payoutReady: Boolean(register.cashAccess?.stripeBankReady && register.cashAccess?.stripeIdentityReady && register.cashAccess?.stripeBusinessMatchReady)
+      payoutReady: payoutReadiness(register).ready
     },
     nextAction: blockers[0] || {
       area: "growth",
@@ -1069,7 +1070,7 @@ function buildProfitBlockers(register, status, income) {
   const blockers = [];
   const backendUrl = register.business?.backendUrl || process.env.BACKEND_URL || "";
   const encryptionReady = hasRealSecret(STORAGE_ENCRYPTION_SECRET, "replace-with-long-random-data-encryption-key");
-  const payoutReady = Boolean(register.cashAccess?.stripeBankReady && register.cashAccess?.stripeIdentityReady && register.cashAccess?.stripeBusinessMatchReady);
+  const payoutReady = payoutReadiness(register).ready;
   const webhookReady = hasRealSecret(process.env.STRIPE_WEBHOOK_SECRET, "whsec_replace_me");
   const stripeLookupReady = hasRealSecret(process.env.STRIPE_SECRET_KEY, "sk_live_replace_me");
   const redditReady = Boolean(register.providerAccounts?.redditAdAccountId || process.env.REDDIT_AD_ACCOUNT_ID || process.env.REDDIT_ADS_ACCESS_TOKEN);
@@ -1083,6 +1084,18 @@ function buildProfitBlockers(register, status, income) {
   if (!redditReady) blockers.push(profitBlocker("acquisition", "medium", "Create Reddit Ads account with capped billing", "Add the capped virtual card inside Reddit Ads, keep the campaign at $5/day for 5 days, and paste the Reddit ad account ID into Launch."));
   if (!income.incomeProducing && status.readiness?.canAcceptPayments && blockers.length === 0) blockers.push(profitBlocker("proof", "medium", "Wait for live paid checkout evidence", "The business is ready to validate. Live income only counts after a Stripe live paid checkout event reaches the webhook.", "system"));
   return blockers;
+}
+
+function payoutReadiness(register) {
+  const bank = process.env.STRIPE_BANK_READY === "true" || Boolean(register.cashAccess?.stripeBankReady);
+  const identity = process.env.STRIPE_IDENTITY_READY === "true" || Boolean(register.cashAccess?.stripeIdentityReady);
+  const businessMatch = process.env.STRIPE_BUSINESS_MATCH_READY === "true" || Boolean(register.cashAccess?.stripeBusinessMatchReady);
+  return {
+    bank,
+    identity,
+    businessMatch,
+    ready: Boolean(bank && identity && businessMatch)
+  };
 }
 
 function profitBlocker(area, priority, title, body, owner = "operator") {
