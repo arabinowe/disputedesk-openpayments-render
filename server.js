@@ -10,8 +10,12 @@ const HOST = process.env.HOST || "127.0.0.1";
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const REGISTER_FILE = path.join(ROOT, "business-register.json");
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
-const LICENSE_SECRET = process.env.LICENSE_SECRET || process.env.STRIPE_WEBHOOK_SECRET || ADMIN_TOKEN || "disputedesk-local-license-v1";
+const ADMIN_TOKEN = hasRealSecret(process.env.ADMIN_TOKEN, "replace-with-long-random-token") ? process.env.ADMIN_TOKEN : "";
+const LICENSE_SECRET = firstRealSecret([
+  [process.env.LICENSE_SECRET, "replace-with-long-random-license-secret"],
+  [process.env.STRIPE_WEBHOOK_SECRET, "whsec_replace_me"],
+  [ADMIN_TOKEN, "replace-with-long-random-token"]
+]) || "disputedesk-local-license-v1";
 const STORAGE_ENCRYPTION_SECRET = process.env.DATA_ENCRYPTION_KEY || "";
 const ENCRYPTED_RECORD_MARKER = "disputedesk.encrypted.v1";
 const CORE_PLAN_PRICE = 99;
@@ -298,7 +302,7 @@ function decodeStoredRecord(record) {
 }
 
 function getStorageEncryptionKey() {
-  if (!STORAGE_ENCRYPTION_SECRET) return null;
+  if (!hasRealSecret(STORAGE_ENCRYPTION_SECRET, "replace-with-long-random-data-encryption-key")) return null;
   return crypto.createHash("sha256").update(`disputedesk-storage:${STORAGE_ENCRYPTION_SECRET}`).digest();
 }
 
@@ -308,7 +312,6 @@ function readBusinessRegister() {
 }
 
 function authorizeAdmin(request) {
-  if (!ADMIN_TOKEN) return true;
   if (request.headers["x-admin-token"] === ADMIN_TOKEN) return true;
   return isLocalRequest(request);
 }
@@ -337,7 +340,7 @@ async function buildLicenseStatus(request, input = {}) {
     customerEmail: record?.email || (operatorLocal ? "local-operator" : ""),
     plan: record?.plan || (operatorLocal ? "operator" : ""),
     liveLicenseCount,
-    licenseSecretConfigured: Boolean(process.env.LICENSE_SECRET || process.env.STRIPE_WEBHOOK_SECRET || ADMIN_TOKEN),
+    licenseSecretConfigured: hasRealSecret(process.env.LICENSE_SECRET, "replace-with-long-random-license-secret") || hasRealSecret(process.env.STRIPE_WEBHOOK_SECRET, "whsec_replace_me") || Boolean(ADMIN_TOKEN),
     checkedAt: new Date().toISOString(),
     message: active
       ? operatorLocal
@@ -800,12 +803,19 @@ function cleanText(value, maxLength) {
 
 function hasRealSecret(value, placeholder) {
   const text = String(value || "").trim();
-  return Boolean(text && text !== placeholder && !text.endsWith("_replace_me"));
+  return Boolean(text && text !== placeholder && !text.endsWith("_replace_me") && !text.includes("•"));
+}
+
+function firstRealSecret(candidates) {
+  for (const [value, placeholder] of candidates) {
+    if (hasRealSecret(value, placeholder)) return value;
+  }
+  return "";
 }
 
 function cleanUrl(value) {
   const text = cleanText(value, 600);
-  if (!text) return "";
+  if (!text || text.includes("•")) return "";
   try {
     const url = new URL(text);
     return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : "";
@@ -907,10 +917,10 @@ function buildBusinessStatus() {
       publicSiteUrl: register.business?.publicSiteUrl || process.env.PUBLIC_SITE_URL || "",
       backendUrl: register.business?.backendUrl || process.env.BACKEND_URL || "",
       adminTokenConfigured: Boolean(ADMIN_TOKEN),
-      storageEncryptionConfigured: Boolean(STORAGE_ENCRYPTION_SECRET),
+      storageEncryptionConfigured: hasRealSecret(STORAGE_ENCRYPTION_SECRET, "replace-with-long-random-data-encryption-key"),
       stripeSecretKeyConfigured: hasRealSecret(process.env.STRIPE_SECRET_KEY, "sk_live_replace_me"),
       stripeWebhookSecretConfigured: hasRealSecret(process.env.STRIPE_WEBHOOK_SECRET, "whsec_replace_me"),
-      licenseSecretConfigured: Boolean(process.env.LICENSE_SECRET || process.env.STRIPE_WEBHOOK_SECRET || ADMIN_TOKEN),
+      licenseSecretConfigured: hasRealSecret(process.env.LICENSE_SECRET, "replace-with-long-random-license-secret") || hasRealSecret(process.env.STRIPE_WEBHOOK_SECRET, "whsec_replace_me") || Boolean(ADMIN_TOKEN),
       metaCapiConfigured: Boolean(process.env.META_PIXEL_ID && process.env.META_ACCESS_TOKEN)
     },
     counts: {
@@ -947,7 +957,7 @@ function buildBusinessStatus() {
       testLicensesAllowed: process.env.ALLOW_TEST_LICENSES === "true"
     },
     workspace: {
-      persistenceReady: Boolean(STORAGE_ENCRYPTION_SECRET),
+      persistenceReady: hasRealSecret(STORAGE_ENCRYPTION_SECRET, "replace-with-long-random-data-encryption-key"),
       encryptedServerRecords: true,
       workspaceCount: new Set(workspaces.map(workspace => workspace.workspaceId).filter(Boolean)).size,
       snapshotCount: workspaces.length,
@@ -968,7 +978,7 @@ function buildBusinessStatus() {
       hasFeedbackCapture: true,
       hasOperatorLoop: true,
       hasPaidAccessGate: true,
-      hasCustomerWorkspacePersistence: Boolean(STORAGE_ENCRYPTION_SECRET),
+      hasCustomerWorkspacePersistence: hasRealSecret(STORAGE_ENCRYPTION_SECRET, "replace-with-long-random-data-encryption-key"),
       hasPolicyPages: ["terms.html", "privacy.html", "refund.html"].every(file => fs.existsSync(path.join(ROOT, file))),
       hasBusinessRegister: fs.existsSync(REGISTER_FILE),
       hasRegisteredPayoutDestination: Boolean(register.cashAccess?.bankAccountLabel),
@@ -1058,7 +1068,7 @@ function buildProfitReport() {
 function buildProfitBlockers(register, status, income) {
   const blockers = [];
   const backendUrl = register.business?.backendUrl || process.env.BACKEND_URL || "";
-  const encryptionReady = Boolean(STORAGE_ENCRYPTION_SECRET);
+  const encryptionReady = hasRealSecret(STORAGE_ENCRYPTION_SECRET, "replace-with-long-random-data-encryption-key");
   const payoutReady = Boolean(register.cashAccess?.stripeBankReady && register.cashAccess?.stripeIdentityReady && register.cashAccess?.stripeBusinessMatchReady);
   const webhookReady = hasRealSecret(process.env.STRIPE_WEBHOOK_SECRET, "whsec_replace_me");
   const stripeLookupReady = hasRealSecret(process.env.STRIPE_SECRET_KEY, "sk_live_replace_me");

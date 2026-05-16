@@ -6,7 +6,8 @@
     "domain": "arabinowe.github.io",
     "supportEmail": "disputedeskservice@gmail.com",
     "publicSiteUrl": "https://arabinowe.github.io/disputedesk-ar-trading-site/",
-    "operatorIdentity": "faceless_brand_led"
+    "operatorIdentity": "faceless_brand_led",
+    "backendUrl": "https://disputedesk-api.onrender.com"
   },
   "pricing": {
     "coreMonthly": 99,
@@ -25,7 +26,7 @@
       "growth": "https://buy.stripe.com/fZuaEZ8Zc4zC4fI8EJgw001",
       "note": "Legacy $199 Growth link is intentionally inactive after the $99 Core pivot. Do not use it for $99 checkout copy."
     },
-    "webhookEndpoint": "",
+    "webhookEndpoint": "https://disputedesk-api.onrender.com/api/stripe/webhook",
     "fundsCustody": "stripe_only",
     "paymentLinksPausedByStripeReview": false,
     "paymentLinksPausedReason": "",
@@ -84,7 +85,8 @@
   "deployment": {
     "backendRepo": "https://github.com/arabinowe/disputedesk-openpayments-render",
     "deployToRenderUrl": "https://render.com/deploy?repo=https://github.com/arabinowe/disputedesk-openpayments-render",
-    "backendHostConfigured": false
+    "backendHostConfigured": true,
+    "backendUrl": "https://disputedesk-api.onrender.com"
   },
-  "updatedAt": "2026-05-16T02:10:07.970Z"
+  "updatedAt": "2026-05-16T02:40:49.698Z"
 }
