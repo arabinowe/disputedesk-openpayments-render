@@ -48,9 +48,9 @@
     "accountHolderName": "AR Trading",
     "bankAccountLabel": "Chase Business account - AR Trading",
     "bankDetailsStored": false,
-    "stripeBankReady": false,
-    "stripeIdentityReady": false,
-    "stripeBusinessMatchReady": false
+    "stripeBankReady": true,
+    "stripeIdentityReady": true,
+    "stripeBusinessMatchReady": true
   },
   "adSpend": {
     "monthlyValidationBudget": 25,
@@ -88,5 +88,5 @@
     "backendHostConfigured": true,
     "backendUrl": "https://disputedesk-api.onrender.com"
   },
-  "updatedAt": "2026-05-16T02:40:49.698Z"
+  "updatedAt": "2026-05-16T02:52:33.000Z"
 }
