@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: disputedesk-api
+    runtime: node
+    plan: free
+    buildCommand: ""
+    startCommand: node server.js
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PUBLIC_SITE_URL
+        value: https://arabinowe.github.io/disputedesk-ar-trading-site/
+      - key: BACKEND_URL
+        sync: false
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: LICENSE_SECRET
+        sync: false
+      - key: DATA_ENCRYPTION_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_BANK_READY
+        value: "false"
+      - key: STRIPE_IDENTITY_READY
+        value: "false"
+      - key: STRIPE_BUSINESS_MATCH_READY
+        value: "false"
+      - key: PAYOUT_BANK_LABEL
+        value: Chase Business account - AR Trading

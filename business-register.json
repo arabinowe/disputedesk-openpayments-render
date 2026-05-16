@@ -1,0 +1,90 @@
+{
+  "business": {
+    "brandName": "DisputeDesk",
+    "businessStructure": "sole_proprietorship_or_dba",
+    "legalOrTradeName": "AR Trading",
+    "domain": "arabinowe.github.io",
+    "supportEmail": "disputedeskservice@gmail.com",
+    "publicSiteUrl": "https://arabinowe.github.io/disputedesk-ar-trading-site/",
+    "operatorIdentity": "faceless_brand_led"
+  },
+  "pricing": {
+    "coreMonthly": 99,
+    "cadence": "monthly",
+    "cancellation": "cancel_anytime",
+    "offer": "DisputeDesk Core"
+  },
+  "checkout": {
+    "stripeMode": "payment_links",
+    "coreLink": "https://buy.stripe.com/fZu8wR2AO5DGaE62glgw003",
+    "trialLink": "",
+    "starterLink": "",
+    "growthLink": "",
+    "scaleLink": "",
+    "legacyPaymentLinks": {
+      "growth": "https://buy.stripe.com/fZuaEZ8Zc4zC4fI8EJgw001",
+      "note": "Legacy $199 Growth link is intentionally inactive after the $99 Core pivot. Do not use it for $99 checkout copy."
+    },
+    "webhookEndpoint": "",
+    "fundsCustody": "stripe_only",
+    "paymentLinksPausedByStripeReview": false,
+    "paymentLinksPausedReason": "",
+    "stripeObjects": {
+      "products": {
+        "core": {
+          "name": "DisputeDesk Core",
+          "priceMonthlyUsd": 99,
+          "taxCategory": "General - Electronically Supplied Services",
+          "createdInStripe": true,
+          "paymentLink": "https://buy.stripe.com/fZu8wR2AO5DGaE62glgw003"
+        }
+      }
+    }
+  },
+  "cashAccess": {
+    "payoutRail": "stripe_payouts",
+    "bankName": "Chase Business",
+    "accountHolderName": "AR Trading",
+    "bankAccountLabel": "Chase Business account - AR Trading",
+    "bankDetailsStored": false,
+    "stripeBankReady": false,
+    "stripeIdentityReady": false,
+    "stripeBusinessMatchReady": false
+  },
+  "adSpend": {
+    "monthlyValidationBudget": 25,
+    "dailyAdCap": 5,
+    "fundingCardLabel": "Robinhood virtual card - ads",
+    "rawCardDataStored": false,
+    "channels": [
+      "reddit_ads"
+    ],
+    "disabledChannels": [
+      "linkedin_ads"
+    ]
+  },
+  "providerAccounts": {
+    "stripeAccountConfigured": true,
+    "stripeReviewStatus": "active_payment_link_created",
+    "metaBusinessPortfolioId": "",
+    "metaAdAccountId": "",
+    "googleAdsCustomerId": "",
+    "redditAdAccountId": ""
+  },
+  "compliance": {
+    "termsPublished": true,
+    "privacyPublished": true,
+    "refundPolicyPublished": true,
+    "aiCodexDisclosure": true,
+    "noLegalAdvice": true,
+    "noOutcomeGuarantee": true,
+    "userAcceptsRisk": true,
+    "selfServeOnly": true
+  },
+  "deployment": {
+    "backendRepo": "https://github.com/arabinowe/disputedesk-openpayments",
+    "deployToRenderUrl": "https://render.com/deploy?repo=https://github.com/arabinowe/disputedesk-openpayments",
+    "backendHostConfigured": false
+  },
+  "updatedAt": "2026-05-16T02:10:07.970Z"
+}

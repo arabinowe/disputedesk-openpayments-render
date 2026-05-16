@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DisputeDesk | Chargeback Evidence Workspace</title>
+    <meta
+      name="description"
+      content="AI-assisted chargeback evidence workspace for small online merchants. Build dispute packets, track deadlines, and test paid acquisition with Stripe-hosted checkout."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div>
+            <p class="eyebrow">OpenPayments</p>
+            <h1>DisputeDesk</h1>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <a class="button primary" href="#monitoring">Dashboard</a>
+          <a class="button secondary" href="#launch">Launch</a>
+          <a class="button secondary" href="#monitoring">Monitoring</a>
+          <a class="button secondary" href="#credentials">Credentials</a>
+          <a class="button secondary" href="#payment-monitor">Money</a>
+          <a class="button secondary" href="#feedback">Feedback</a>
+          <a class="button secondary" href="#workspace">Product</a>
+          <button class="button primary" id="newDisputeButton" type="button">New dispute</button>
+          <label class="button secondary" for="csvInput">Import CSV</label>
+          <input id="csvInput" class="sr-only" type="file" accept=".csv,text/csv" />
+          <button class="button secondary" id="exportCsvButton" type="button">Export CSV</button>
+        </div>
+
+        <div class="side-panel">
+          <p class="panel-label">Solo operator model</p>
+          <strong id="sideRevenue">$0</strong>
+          <span>recovery value in active work</span>
+        </div>
+
+        <div class="side-panel">
+          <p class="panel-label">Evidence posture</p>
+          <strong id="sideConfidence">0%</strong>
+          <span>average packet confidence</span>
+        </div>
+
+        <p class="privacy-note">
+          Stripe-hosted checkout. Ad cards stay inside ad platforms. No card numbers stored here.
+        </p>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">AI-assisted payments venture</p>
+            <h2>DisputeDesk operator console</h2>
+          </div>
+          <div class="topbar-controls">
+            <button class="ghost-button" id="seedButton" type="button">Load samples</button>
+            <button class="ghost-button" id="clearButton" type="button">Clear data</button>
+          </div>
+        </header>
+
+        <section class="access-gate" id="accessGate" aria-labelledby="accessTitle">
+          <div class="access-copy">
+            <p class="panel-label">Paid software access</p>
+            <h3 id="accessTitle">The workspace unlocks after Stripe checkout.</h3>
+            <p>
+              Public users need a paid Stripe license before they can create, import, export, copy, download, or save dispute packets.
+              Local operator mode is allowed only on this computer for setup and monitoring.
+            </p>
+            <div class="access-status" id="licenseStatus"></div>
+          </div>
+          <form class="access-form" id="licenseForm">
+            <label>
+              Customer email
+              <input name="email" type="email" placeholder="merchant@example.com" autocomplete="email" />
+            </label>
+            <label>
+              Access token or Checkout Session ID
+              <input name="token" placeholder="Token or cs_live_..." autocomplete="off" />
+            </label>
+            <div class="access-actions">
+              <button class="button primary" type="submit">Unlock workspace</button>
+              <a class="button secondary" id="licenseCheckoutLink" href="#payments">Add Core checkout link</a>
+            </div>
+          </form>
+        </section>
+
+        <section class="monitor-strip" id="monitoring" aria-labelledby="monitoringTitle">
+          <div class="monitor-heading">
+            <div>
+              <p class="panel-label">Business monitor</p>
+              <h3 id="monitoringTitle">Running status and income evidence</h3>
+            </div>
+            <div class="topbar-controls">
+              <button class="ghost-button" id="topCheckHealthButton" type="button">Check status</button>
+              <button class="ghost-button" id="topSyncIncomeButton" type="button">Sync income</button>
+              <button class="ghost-button" id="topRunOpsButton" type="button">Run ops</button>
+            </div>
+          </div>
+          <div class="monitor-grid" id="topMonitorGrid"></div>
+          <div class="monitor-note" id="topMonitorNote"></div>
+        </section>
+
+        <section class="credentials-section" id="credentials" aria-labelledby="credentialsTitle">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="panel-label">MVP account setup</p>
+              <h3 id="credentialsTitle">Accounts and credentials needed before paid traffic</h3>
+            </div>
+            <button class="ghost-button" id="syncCredentialsButton" type="button">Refresh setup</button>
+          </div>
+          <div class="deployment-strip" id="deploymentStrip"></div>
+          <div class="credential-note" id="credentialNote"></div>
+          <div class="credential-grid" id="credentialGrid"></div>
+        </section>
+
+        <section class="profit-section" id="profit-operator" aria-labelledby="profitOperatorTitle">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="panel-label">Profit operator</p>
+              <h3 id="profitOperatorTitle">Highest-leverage action and unit economics</h3>
+            </div>
+            <button class="ghost-button" id="syncProfitButton" type="button">Refresh profit report</button>
+          </div>
+          <div class="profit-operator-grid">
+            <div class="panel profit-action" id="profitAction"></div>
+            <div class="panel profit-economics" id="profitEconomics"></div>
+          </div>
+        </section>
+
+        <section class="storefront-section secondary-section" id="storefront" aria-labelledby="storefrontTitle">
+          <div class="storefront-copy">
+            <p class="eyebrow">DisputeDesk for merchants</p>
+            <h2 id="storefrontTitle">Build stronger chargeback packets before the deadline closes.</h2>
+            <p>
+              DisputeDesk Core is a $99/month, cancel-anytime chargeback evidence workspace for small Stripe and Shopify Payments merchants.
+              It helps organize evidence, deadlines, and rebuttal drafts. It does not guarantee outcomes or submit legal advice.
+            </p>
+            <div class="storefront-actions">
+              <a class="button primary checkout-link" id="primaryCheckoutLink" href="#payments">Start Core checkout</a>
+              <a class="button secondary" href="#launch">Plan ad test</a>
+            </div>
+            <ul class="trust-list">
+              <li>No card data stored in this app</li>
+              <li>No win guarantees or legal advice claims</li>
+              <li>AI-assisted software built with Codex from OpenAI</li>
+              <li>User accepts responsibility for software use</li>
+            </ul>
+            <form class="lead-form" id="leadForm">
+              <input name="email" type="email" placeholder="merchant@example.com" aria-label="Work email" required />
+              <input name="company" type="text" placeholder="Store name" aria-label="Store name" required />
+              <button class="button primary" type="submit">Get sample packet</button>
+            </form>
+          </div>
+
+          <div class="product-visual" aria-label="DisputeDesk packet preview">
+            <div class="visual-topline">
+              <span>du_77A8QP</span>
+              <strong>82% ready</strong>
+            </div>
+            <div class="visual-bars">
+              <span style="width: 88%"></span>
+              <span style="width: 64%"></span>
+              <span style="width: 74%"></span>
+            </div>
+            <div class="visual-packet">
+              <p>Evidence packet</p>
+              <strong>Fraudulent dispute</strong>
+              <span>AVS/CVC result</span>
+              <span>IP and device record</span>
+              <span>Post-purchase usage</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="storefront-grid secondary-section" id="payments" aria-labelledby="pricingTitle">
+          <div class="section-heading">
+            <p class="panel-label">Storefront and checkout</p>
+            <h3 id="pricingTitle">Sell with Stripe Payment Links</h3>
+          </div>
+          <div class="pricing-grid" id="pricingGrid"></div>
+          <div class="profit-grid" id="profitGrid"></div>
+        </section>
+
+        <section class="research-section secondary-section" id="research" aria-labelledby="researchTitle">
+          <div class="section-heading">
+            <p class="panel-label">Strategic validation</p>
+            <h3 id="researchTitle">Only ship features tied to demand and willingness to pay</h3>
+          </div>
+          <div class="market-confidence" id="marketConfidence"></div>
+          <div class="research-grid" id="researchGrid"></div>
+        </section>
+
+        <section class="launch-section" id="launch" aria-labelledby="launchTitle">
+          <div class="section-heading compact-heading">
+            <p class="panel-label">Paid acquisition test</p>
+            <h3 id="launchTitle">Reddit $25 validation campaign</h3>
+          </div>
+          <div class="validation-strip">
+            <strong>$25 validation rule</strong>
+            <span>Do not scale spend until the test produces one paid checkout or three self-serve feedback submissions with clear willingness-to-pay signal.</span>
+          </div>
+
+          <div class="next-action-panel">
+            <div>
+              <p class="panel-label">Your next action</p>
+              <h3>Do only these account-owner steps</h3>
+            </div>
+            <ol class="number-list">
+              <li>Give Stripe a public DisputeDesk website URL. Do not use <code>127.0.0.1</code>, <code>localhost</code>, or a private preview URL.</li>
+              <li>Create a real support inbox, such as <code>support@your-domain.com</code> or a dedicated Gmail/Google Workspace address, then paste it below.</li>
+              <li>In Stripe, link the Chase Business account registered as AR Trading and finish identity/tax verification.</li>
+              <li>Create one live Stripe Payment Link for <code>DisputeDesk Core</code> at <code>$99/month</code>, cancel anytime, or set <code>STRIPE_SECRET_KEY</code> locally and run <code>./setup-stripe.command</code> so the software creates it.</li>
+              <li>Paste the live Core Payment Link below, then click Save launch settings.</li>
+              <li>After checkout works, create the Reddit Ads account with a $25 cap. Do not launch ad spend until live Stripe checkout is ready.</li>
+            </ol>
+          </div>
+
+          <div class="launch-grid">
+            <form class="panel launch-form" id="businessForm">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Inputs</p>
+                  <h3>Complete these fields first</h3>
+                </div>
+              </div>
+
+              <div class="form-grid compact launch-setup-form">
+                <label>
+                  Website URL
+                  <input name="websiteUrl" type="url" placeholder="https://yourdomain.com" />
+                </label>
+                <label>
+                  Backend URL
+                  <input name="backendUrl" type="url" placeholder="https://disputedesk-api.onrender.com" />
+                </label>
+                <label>
+                  Contact email
+                  <input name="businessEmail" type="email" placeholder="disputedeskservice@gmail.com" />
+                </label>
+                <label>
+                  Legal or trade name
+                  <input name="businessLegalName" placeholder="AR Trading" />
+                </label>
+                <label>
+                  Stripe payout bank label
+                  <input name="payoutBankLabel" placeholder="Chase Business account - AR Trading" />
+                </label>
+                <label>
+                  Google tag ID
+                  <input name="googleTagId" placeholder="G-... or AW-..." />
+                </label>
+                <label>
+                  Reddit Pixel ID
+                  <input name="redditPixelId" />
+                </label>
+                <label class="advanced-field">
+                  Google Ads conversion
+                  <input name="googleAdsSendTo" placeholder="AW-123/LABEL" />
+                </label>
+                <label class="advanced-field">
+                  Meta Pixel ID
+                  <input name="metaPixelId" inputmode="numeric" />
+                </label>
+                <label class="advanced-field">
+                  LinkedIn partner ID (unused)
+                  <input name="linkedinPartnerId" inputmode="numeric" disabled />
+                </label>
+                <label class="advanced-field">
+                  LinkedIn conversion ID (unused)
+                  <input name="linkedinConversionId" inputmode="numeric" disabled />
+                </label>
+                <label>
+                  Monthly ad test budget
+                  <input name="monthlyBudget" type="number" min="0" max="25" step="5" />
+                </label>
+                <label>
+                  Core plan price
+                  <input name="planPrice" type="number" min="99" max="99" step="1" readonly />
+                </label>
+                <label>
+                  Visitor-to-paid conversion %
+                  <input name="conversionRate" type="number" min="1" max="100" step="1" />
+                </label>
+                <label>
+                  Gross margin %
+                  <input name="grossMargin" type="number" min="1" max="100" step="1" />
+                </label>
+                <label class="span-2">
+                  Core $99 monthly payment link
+                  <input name="coreLink" type="url" placeholder="https://buy.stripe.com/..." />
+                </label>
+              </div>
+
+              <div class="dialog-actions">
+                <button class="button primary" type="submit">Save launch settings</button>
+              </div>
+              <div class="setup-note">
+                <strong>Programmatic registration</strong>
+                <span>Saving this form writes the local business register. After setting <code>STRIPE_SECRET_KEY</code> locally, run <code>./setup-stripe.command</code> to create the one Core product, price, and Payment Link. Link the Chase bank account only inside Stripe.</span>
+              </div>
+            </form>
+
+            <div class="panel launch-results">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Campaign kit</p>
+                  <h3>Copy this into Reddit Ads</h3>
+                </div>
+              </div>
+              <div class="roi-grid" id="launchMetrics"></div>
+              <div class="break-even-note" id="breakEvenNote"></div>
+            </div>
+          </div>
+
+          <div class="channel-grid" id="channelGrid"></div>
+          <div class="ad-quality-grid" id="adQualityGrid"></div>
+        </section>
+
+        <section class="autopilot-section secondary-section" id="autopilot" aria-labelledby="autopilotTitle">
+          <div class="section-heading">
+            <p class="panel-label">Programmatic operator</p>
+            <h3 id="autopilotTitle">Run the business with capped spend and official billing rails</h3>
+          </div>
+          <div class="autopilot-grid">
+            <form class="panel" id="autopilotForm">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Funding controls</p>
+                  <h3>Card-safe budget rules</h3>
+                </div>
+              </div>
+              <p class="muted-copy">
+                Do not enter card numbers here. Add the capped virtual card directly inside Stripe and each ad platform.
+                This app stores caps, account IDs, and operating rules only.
+              </p>
+              <div class="form-grid compact">
+                <label>
+                  Card label
+                  <input name="fundingCardLabel" placeholder="Robinhood virtual card - Ads" />
+                </label>
+                <label>
+                  Monthly card cap
+                  <input name="fundingMonthlyCap" type="number" min="0" step="25" />
+                </label>
+                <label>
+                  Daily ad cap
+                  <input name="dailyAdCap" type="number" min="0" step="5" />
+                </label>
+                <label>
+                  Max CAC allowed
+                  <input name="maxCac" type="number" min="0" step="1" />
+                </label>
+                <label>
+                  Autopilot mode
+                  <select name="autopilotMode">
+                    <option value="draft">Draft campaigns only</option>
+                    <option value="approval">Require approval before spend</option>
+                    <option value="capped">Capped API launch after approval</option>
+                  </select>
+                </label>
+                <label>
+                  Stripe account mode
+                  <select name="stripeAccountMode">
+                    <option value="payment_links">Payment Links</option>
+                    <option value="checkout_api">Checkout API later</option>
+                  </select>
+                </label>
+                <label>
+                  Google Ads customer ID
+                  <input name="googleAdsCustomerId" placeholder="123-456-7890" />
+                </label>
+                <label>
+                  Meta ad account ID
+                  <input name="metaAdAccountId" placeholder="act_..." />
+                </label>
+                <label>
+                  Meta business portfolio ID
+                  <input name="metaBusinessPortfolioId" />
+                </label>
+                <label>
+                  Reddit ad account ID
+                  <input name="redditAdAccountId" />
+                </label>
+                <label>
+                  Direct outreach list
+                  <input name="directOutreachList" placeholder="CSV, Sheet, or manual prospect list" />
+                </label>
+              </div>
+              <div class="dialog-actions">
+                <button class="button secondary" id="exportOperatorButton" type="button">Export operator config</button>
+                <button class="button primary" type="submit">Save operator rules</button>
+              </div>
+            </form>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Autopilot status</p>
+                  <h3>Business operating loop</h3>
+                </div>
+              </div>
+              <div class="operator-list" id="operatorList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="operations-section" id="operations" aria-labelledby="operationsTitle">
+          <div class="section-heading">
+            <p class="panel-label">Headless operations</p>
+            <h3 id="operationsTitle">Autonomous business control loop</h3>
+          </div>
+          <div class="operations-grid">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Operating norms</p>
+                  <h3>Business rules</h3>
+                </div>
+                <div class="topbar-controls">
+                  <button class="ghost-button" id="syncAllButton" type="button">Sync all</button>
+                  <button class="ghost-button" id="runOpsButton" type="button">Run ops cycle</button>
+                </div>
+              </div>
+              <div class="ops-summary" id="opsSummary"></div>
+              <div class="operation-norms" id="operationNorms"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Action queue</p>
+                  <h3>Autonomous next actions</h3>
+                </div>
+              </div>
+              <div class="ops-action-list" id="opsActionList"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Monitoring</p>
+                  <h3>System health</h3>
+                </div>
+                <button class="ghost-button" id="checkHealthButton" type="button">Check health</button>
+              </div>
+              <div class="system-health" id="systemHealth"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="systems-section secondary-section" id="systems" aria-labelledby="systemsTitle">
+          <div class="section-heading">
+            <p class="panel-label">Business systems</p>
+            <h3 id="systemsTitle">Launch integrations and setup status</h3>
+          </div>
+          <div class="cost-stack" id="costStack"></div>
+          <div class="registration-grid" id="registrationGrid"></div>
+          <div class="systems-grid" id="systemsGrid"></div>
+        </section>
+
+        <section class="onboarding-section secondary-section" id="onboarding" aria-labelledby="onboardingTitle">
+          <div class="section-heading">
+            <p class="panel-label">After payment</p>
+            <h3 id="onboardingTitle">Customer onboarding handoff</h3>
+          </div>
+          <div class="onboarding-grid">
+            <div class="panel">
+              <p class="panel-label">Customer next steps</p>
+              <h3>Connect data without touching card numbers</h3>
+              <ol class="number-list">
+                <li>Export disputes from Stripe, Shopify Payments, or PayPal.</li>
+                <li>Import the CSV into DisputeDesk.</li>
+                <li>Upload supporting evidence into the processor dashboard when the packet is ready.</li>
+                <li>Use the generated rebuttal as a reviewed draft, not legal advice.</li>
+              </ol>
+            </div>
+            <div class="panel">
+              <p class="panel-label">Fulfillment endpoint</p>
+              <h3>Stripe webhook ready</h3>
+              <p class="muted-copy">
+                When deployed with the included Node server, set Stripe Payment Links to redirect here after payment
+                and send <code>checkout.session.completed</code> webhooks to <code>/api/stripe/webhook</code>.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="payments-section" id="payment-monitor" aria-labelledby="paymentMonitorTitle">
+          <div class="section-heading">
+            <p class="panel-label">Revenue monitor</p>
+            <h3 id="paymentMonitorTitle">Payments, customers, and cash access</h3>
+          </div>
+          <div class="stripe-setup-bar" id="stripeSetupBar">
+            <div>
+              <p class="panel-label">Stripe setup</p>
+              <strong>Payment Links + Chase payout rail</strong>
+            </div>
+            <div class="stripe-link-row">
+              <a href="https://dashboard.stripe.com/products" target="_blank" rel="noreferrer">Products</a>
+              <a href="https://dashboard.stripe.com/payment-links" target="_blank" rel="noreferrer">Payment Links</a>
+              <a href="https://dashboard.stripe.com/webhooks" target="_blank" rel="noreferrer">Webhooks</a>
+              <a href="https://dashboard.stripe.com/settings/payouts" target="_blank" rel="noreferrer">Payout Bank</a>
+            </div>
+          </div>
+          <div class="payments-grid">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Stripe fulfillment</p>
+                  <h3>Payment events</h3>
+                </div>
+                <button class="ghost-button" id="syncPaymentsButton" type="button">Sync payments</button>
+              </div>
+              <div class="payment-summary" id="paymentSummary"></div>
+              <div class="payment-list" id="paymentList"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Cash access checklist</p>
+                  <h3>Stripe pays out to Chase</h3>
+                </div>
+              </div>
+              <div class="cash-list" id="cashAccessList"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Income evidence</p>
+                  <h3>Live paid proof</h3>
+                </div>
+                <button class="ghost-button" id="syncIncomeButton" type="button">Sync income</button>
+              </div>
+              <div class="income-evidence" id="incomeEvidence"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="feedback-section" id="feedback" aria-labelledby="feedbackTitle">
+          <div class="section-heading">
+            <p class="panel-label">Release loop</p>
+            <h3 id="feedbackTitle">Customer feedback into versioned product decisions</h3>
+          </div>
+          <div class="feedback-grid">
+            <form class="panel feedback-form" id="feedbackForm">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Voice of customer</p>
+                  <h3>Capture feedback</h3>
+                </div>
+              </div>
+              <div class="form-grid compact">
+                <label>
+                  Customer email
+                  <input name="email" type="email" placeholder="merchant@example.com" required />
+                </label>
+                <label>
+                  Feedback type
+                  <select name="type" required>
+                    <option value="missing_feature">Missing feature</option>
+                    <option value="confusing_workflow">Confusing workflow</option>
+                    <option value="bug">Bug</option>
+                    <option value="pricing">Pricing concern</option>
+                    <option value="testimonial">Positive outcome</option>
+                  </select>
+                </label>
+                <label>
+                  Priority
+                  <select name="priority" required>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </label>
+                <label>
+                  Version seen
+                  <input name="version" value="0.1.0" required />
+                </label>
+                <label class="span-2">
+                  Feedback
+                  <textarea name="message" rows="5" required placeholder="What happened, what did you expect, and what would make this worth paying for?"></textarea>
+                </label>
+              </div>
+              <div class="dialog-actions">
+                <button class="button secondary" id="exportFeedbackButton" type="button">Export feedback CSV</button>
+                <button class="button primary" type="submit">Add to release loop</button>
+              </div>
+            </form>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Customer outcomes</p>
+                  <h3>Feedback dashboard</h3>
+                </div>
+                <button class="ghost-button" id="syncFeedbackButton" type="button">Sync server</button>
+              </div>
+              <div class="feedback-summary" id="feedbackSummary"></div>
+              <div class="feedback-controls">
+                <input id="feedbackSearch" type="search" placeholder="Search all feedback" />
+                <select id="feedbackTypeFilter" aria-label="Filter feedback type">
+                  <option value="all">All types</option>
+                  <option value="missing_feature">Missing feature</option>
+                  <option value="confusing_workflow">Confusing workflow</option>
+                  <option value="bug">Bug</option>
+                  <option value="pricing">Pricing concern</option>
+                  <option value="testimonial">Positive outcome</option>
+                </select>
+                <select id="feedbackPriorityFilter" aria-label="Filter feedback priority">
+                  <option value="all">All priorities</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+                <input id="feedbackAdminToken" type="password" placeholder="Admin token if required" aria-label="Admin token" />
+              </div>
+              <div class="feedback-list" id="feedbackList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="legal-section secondary-section" id="legal" aria-labelledby="legalTitle">
+          <div class="section-heading">
+            <p class="panel-label">Market safely</p>
+            <h3 id="legalTitle">Plain-English compliance guardrails</h3>
+          </div>
+          <div class="legal-grid">
+            <article class="legal-card">
+              <h4>Positioning</h4>
+              <p>Lower-cost operations software for merchants. Not a law firm, payment processor, bank, card network, or decision maker.</p>
+            </article>
+            <article class="legal-card">
+              <h4>Money handling</h4>
+              <p>Stripe processes customer payments and pays out to the Chase Business account for AR Trading. DisputeDesk does not transmit, custody, lend, pool, or escrow funds.</p>
+            </article>
+            <article class="legal-card">
+              <h4>Advertising</h4>
+              <p>Use evidence-backed claims only. Avoid guaranteed win rates, guaranteed income, fake reviews, or unsupported AI performance claims.</p>
+            </article>
+            <article class="legal-card">
+              <h4>Email</h4>
+              <p>Commercial email needs accurate sender details, an ad disclosure where appropriate, a postal address, and an opt-out path.</p>
+            </article>
+            <article class="legal-card">
+              <h4>Use at own risk</h4>
+              <p>The customer is responsible for reviewing outputs, deciding what to submit, protecting data, and complying with processor rules.</p>
+            </article>
+            <article class="legal-card">
+              <h4>AI disclosure</h4>
+              <p>This business uses AI-assisted software built with Codex from OpenAI. Outputs may be incomplete, inaccurate, or unsuitable for a specific dispute, and users accept the risks of using AI-generated drafts and workflows.</p>
+            </article>
+            <article class="legal-card">
+              <h4>Data</h4>
+              <p>Do not request card numbers. Minimize customer evidence data, export it on request, and delete records when they are no longer needed.</p>
+            </article>
+          </div>
+          <nav class="policy-links" aria-label="Policy links">
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="refund.html">Refund policy</a>
+          </nav>
+        </section>
+
+        <section class="metric-grid secondary-section" id="metricGrid" aria-label="Portfolio metrics"></section>
+
+        <section class="workspace-grid" id="workspace">
+          <section class="panel list-panel" aria-labelledby="queueTitle">
+            <div class="panel-header">
+              <div>
+                <p class="panel-label">Work queue</p>
+                <h3 id="queueTitle">Open disputes</h3>
+              </div>
+              <span class="count-pill" id="queueCount">0</span>
+            </div>
+
+            <div class="filter-row">
+              <input id="searchInput" type="search" placeholder="Search customer, ID, or order" />
+              <select id="statusFilter" aria-label="Filter by status">
+                <option value="all">All statuses</option>
+                <option value="collecting">Collecting</option>
+                <option value="ready">Ready</option>
+                <option value="submitted">Submitted</option>
+                <option value="won">Won</option>
+                <option value="lost">Lost</option>
+              </select>
+              <select id="reasonFilter" aria-label="Filter by reason">
+                <option value="all">All reasons</option>
+              </select>
+            </div>
+
+            <div class="queue-list" id="disputeList"></div>
+          </section>
+
+          <section class="panel detail-panel" aria-labelledby="detailTitle">
+            <div class="detail-empty" id="detailEmpty">
+              <p class="panel-label">Evidence builder</p>
+              <h3 id="detailTitle">Select a dispute</h3>
+              <p>Packets appear here once a dispute is selected.</p>
+            </div>
+
+            <div class="detail-content" id="detailContent" hidden>
+              <div class="detail-heading">
+                <div>
+                  <p class="panel-label" id="detailProcessor">Processor</p>
+                  <h3 id="detailName">Dispute</h3>
+                </div>
+                <div class="detail-actions">
+                  <button class="ghost-button" id="copyPacketButton" type="button">Copy packet</button>
+                  <button class="ghost-button" id="downloadPacketButton" type="button">Download packet</button>
+                </div>
+              </div>
+
+              <div class="detail-summary" id="detailSummary"></div>
+
+              <div class="status-editor">
+                <label for="statusEditor">Status</label>
+                <select id="statusEditor">
+                  <option value="collecting">Collecting</option>
+                  <option value="ready">Ready</option>
+                  <option value="submitted">Submitted</option>
+                  <option value="won">Won</option>
+                  <option value="lost">Lost</option>
+                </select>
+              </div>
+
+              <div class="progress-block">
+                <div class="progress-label">
+                  <span>Packet confidence</span>
+                  <strong id="confidenceText">0%</strong>
+                </div>
+                <div class="progress-track" aria-hidden="true">
+                  <span id="confidenceBar"></span>
+                </div>
+              </div>
+
+              <div class="customer-fit-grid" id="customerFitGrid"></div>
+              <div class="packet-qa" id="packetQa"></div>
+
+              <div class="builder-grid">
+                <div>
+                  <div class="subhead-row">
+                    <h4>Evidence checklist</h4>
+                    <button class="text-button" id="markReadyButton" type="button">Mark ready</button>
+                  </div>
+                  <div class="checklist" id="evidenceChecklist"></div>
+                </div>
+
+                <div>
+                  <h4>Rebuttal letter</h4>
+                  <textarea id="narrativeInput" rows="12"></textarea>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="ops-grid secondary-section">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="panel-label">Pricing signal</p>
+                <h3>Recovery economics</h3>
+              </div>
+            </div>
+            <div class="roi-grid" id="roiGrid"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="panel-label">Operating rhythm</p>
+                <h3>Operator queue</h3>
+              </div>
+            </div>
+            <div class="playbook-list" id="playbookList"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="disputeDialog">
+      <form id="disputeForm" method="dialog">
+        <div class="dialog-header">
+          <div>
+            <p class="panel-label">New record</p>
+            <h3>Add a dispute</h3>
+          </div>
+          <button class="icon-button" id="closeDialogButton" type="button" aria-label="Close dialog">x</button>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            Processor
+            <select name="processor" required>
+              <option>Stripe</option>
+              <option>Shopify Payments</option>
+              <option>PayPal</option>
+              <option>Adyen</option>
+            </select>
+          </label>
+          <label>
+            Dispute ID
+            <input name="id" required placeholder="du_..." />
+          </label>
+          <label>
+            Order ID
+            <input name="orderId" required placeholder="#1042" />
+          </label>
+          <label>
+            Customer
+            <input name="customer" required />
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" required />
+          </label>
+          <label>
+            Amount
+            <input name="amount" type="number" min="0" step="0.01" required />
+          </label>
+          <label>
+            Reason
+            <select name="reason" id="reasonSelect" required></select>
+          </label>
+          <label>
+            Evidence due
+            <input name="dueDate" type="date" required />
+          </label>
+          <label class="span-2">
+            Product or service
+            <input name="product" required />
+          </label>
+          <label class="span-2">
+            Internal notes
+            <textarea name="notes" rows="4"></textarea>
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="button secondary" id="cancelDialogButton" type="button">Cancel</button>
+          <button class="button primary" type="submit">Create packet</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

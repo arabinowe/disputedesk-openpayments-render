@@ -1,0 +1,29 @@
+{
+  "name": "disputedesk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-assisted chargeback evidence workspace with a self-selling launch cockpit.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check app.js && node --check server.js && node --check scripts/run-ops-cycle.js && node --check scripts/check-income.js && node --check scripts/setup-stripe-payment-links.js && node --check scripts/monitor-money-path.js && node --check scripts/prove-running.js && node --check scripts/init-mvp-credentials.js && node --check scripts/profit-operator-report.js && node --check scripts/trust-audit.js && node --check scripts/business-automation.js && node --check scripts/encrypt-existing-data.js && node --check scripts/check-encryption.js && node --check scripts/register-backend-url.js && node --check scripts/verify-backend.js && node --check scripts/apply-core-payment-link.js && node --check scripts/check-core-checkout.js && node --check scripts/check-customer-workspace.js",
+    "ops": "node scripts/run-ops-cycle.js",
+    "income": "node scripts/check-income.js",
+    "prove": "node scripts/prove-running.js",
+    "money-path": "node scripts/monitor-money-path.js",
+    "trust": "node scripts/trust-audit.js",
+    "profit": "node scripts/profit-operator-report.js",
+    "encryption": "node scripts/check-encryption.js",
+    "encrypt:data": "node scripts/encrypt-existing-data.js",
+    "backend:register": "node scripts/register-backend-url.js",
+    "backend:verify": "node scripts/verify-backend.js",
+    "stripe:setup": "node scripts/setup-stripe-payment-links.js",
+    "stripe:apply-core": "node scripts/apply-core-payment-link.js",
+    "stripe:check-core": "node scripts/check-core-checkout.js",
+    "workspace:check": "node scripts/check-customer-workspace.js",
+    "credentials": "node scripts/init-mvp-credentials.js",
+    "automation": "node scripts/business-automation.js"
+  }
+}
